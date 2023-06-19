@@ -2,21 +2,17 @@
   "name": "scaleway-instance-backup-function",
   "description": "",
   "author": "Loop Crew",
+  "main": "index.js",
   "version": "1.0.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Loop-Crew/portalia.git"
+    "url": "https://github.com/Loop-Crew/instance_backup.git"
   },
   "packageManager": "pnpm@8.5.1",
   "private": true,
-  "scripts": {
-    "serverless": "infisical run -- serverless deploy"
-  },
+  "type": "module",
   "dependencies": {
+    "@scaleway/serverless-functions": "^1.0.2",
     "axios": "^0.24.0"
-  },
-  "devDependencies": {
-    "serverless": "^3.32.2",
-    "serverless-scaleway-functions": ">=0.2.3"
   }
 }

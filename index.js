@@ -1,19 +1,22 @@
-module.exports.handle = (event, context, callback) => {
+// Note : to enable Common JS (require, module.exports etc...) in Node >= 16 runtimes
+// you have to push your package.json, this can be done with Scaleway Serverless framework
+// documentation here : https://github.com/scaleway/serverless-scaleway-functions
 
-    const axios = require('axios');
+import axios from 'axios';
 
-    let zone = process.env.ZONE;
+export function handle (event, context, cb) {
+    let api_url = 'https://api.scaleway.com';
     let api_key = process.env.API_KEY;
-    let volume = process.env.VOLUME_ID;
-    let project = process.env.PROJECT_ID;
-    let apiUrl = 'https://api.scaleway.com';
+    let project_id = process.env.PROJECT_ID;
+    let zone = process.env.ZONE;
+    let volume_id = process.env.VOLUME_ID;
 
     let needsBackup = true;
 
     axios({
         method: 'get',
-        url: '/instance/v1/zones/{zone}/snapshots'.replace('{zone}', zone),
-        baseURL: apiUrl,
+        url: `/instance/v1/zones/${zone}/snapshots`,
+        baseURL: api_url,
         headers: {
             'X-Auth-Token': api_key,
         },
@@ -25,7 +28,7 @@ module.exports.handle = (event, context, callback) => {
         .then(response => {
             let snapshots = response.data.snapshots;
             for (let snapshot of snapshots) {
-                if (snapshot.base_volume !== null && volume === snapshot.base_volume.id) {
+                if (snapshot.base_volume !== null && volume_id === snapshot.base_volume.id) {
                     let diff = new Date().getTime() - new Date(snapshot.creation_date).getTime();
                     let dayDiff = diff / 86400000;
                     if (dayDiff >= 7) {
@@ -34,7 +37,7 @@ module.exports.handle = (event, context, callback) => {
                             url: '/instance/v1/zones/{zone}/snapshots/{snapshot_id}'
                                 .replace('{zone}', zone)
                                 .replace('{snapshot_id}', snapshot.id),
-                            baseURL: apiUrl,
+                            baseURL: api_url,
                             headers: {
                                 'X-Auth-Token': api_key,
                             },
@@ -60,14 +63,14 @@ module.exports.handle = (event, context, callback) => {
                 axios({
                     method: "post",
                     url: "/instance/v1/zones/{zone}/snapshots".replace('{zone}', zone),
-                    baseURL: apiUrl,
+                    baseURL: api_url,
                     headers: {
                         'X-Auth-Token': api_key,
                     },
                     data: {
                         'name': 'automatic',
-                        'volume_id': volume,
-                        'project': project,
+                        'volume_id': volume_id,
+                        'project': project_id,
                     },
                     responseType: 'json',
                 })
@@ -82,14 +85,19 @@ module.exports.handle = (event, context, callback) => {
         }).catch((reason => {
         console.log(reason)
     }));
-
-    const response = {
-        statusCode: 200,
+    
+    return {
         body: JSON.stringify({
             message: 'done',
         }),
+        statusCode: 200,
     };
-
-    // either return cb(undefined, response) or return response
-    return response;
 };
+
+import { pathToFileURL } from "url";
+
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+    import("@scaleway/serverless-functions").then(scw_fnc_node => {
+      scw_fnc_node.serveHandler(handle, 8080);
+    });
+  }
