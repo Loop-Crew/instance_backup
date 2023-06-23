@@ -15,7 +15,7 @@ Check the Crew's guide for further informations.
 
 ## How to test ?
 
-1. Run `infisical run -- node handler.js` to start the local server
+1. Run `infisical run -- NODE_ENV=test node handler.js` to start the local server
 2. Run `curl -X GET http://localhost:8080` against it
 
 ## Ressource

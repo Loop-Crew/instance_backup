@@ -1,6 +1,5 @@
 service: crew-backup
 configValidationMode: off
-useDotenv: true
 
 provider:
   name: scaleway
@@ -14,6 +13,7 @@ plugins:
 
 package:
   patterns:
+    - '!node_modules/**'
     - '!.gitignore'
     - '!.git/**'
     - '!readme.md'
@@ -25,7 +25,7 @@ functions:
     handler: handler.handle
     events:
       - schedule:
-          rate: '0 0 * * *'
+          rate: ${env:SCHEDULE_RATE}
     env:
       PROJECT_ID: ${env:PROJECT_ID}
       ZONE: ${env:ZONE}

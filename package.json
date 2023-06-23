@@ -2,7 +2,7 @@
   "name": "scaleway-instance-backup-function",
   "description": "",
   "author": "Loop Crew",
-  "main": "index.js",
+  "main": "handler.js",
   "version": "1.0.0",
   "repository": {
     "type": "git",
@@ -15,11 +15,11 @@
     "deploy": "infisical run -- serverless deploy"
   },
   "dependencies": {
-    "axios": "^0.24.0",
-    "serverless-scaleway-functions": "^0.4.7"
+    "axios": "^0.24.0"
   },
   "devDependencies": {
     "@scaleway/serverless-functions": "^1.0.2",
-    "serverless": "^3.32.2"
+    "serverless": "^3.32.2",
+    "serverless-scaleway-functions": "^0.4.7"
   }
 }

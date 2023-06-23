@@ -1,3 +1,5 @@
+"use strict"
+
 // Note : to enable Common JS (require, module.exports etc...) in Node >= 16 runtimes
 // you have to push your package.json, this can be done with Scaleway Serverless framework
 // documentation here : https://github.com/scaleway/serverless-scaleway-functions
@@ -96,11 +98,9 @@ function handle (event, context, cb) {
     };
 };
 
-// // For testing purposes
-// import { pathToFileURL } from "url";
-
-// if (import.meta.url === pathToFileURL(process.argv[1]).href) {
-//     import("@scaleway/serverless-functions").then(scw_fnc_node => {
-//       scw_fnc_node.serveHandler(handle, 8080);
-//     });
-// }
+// This is used to test locally and will not be executed on Scaleway Functions
+if (process.env.NODE_ENV === 'test') {
+    import("@scaleway/serverless-functions").then(scw_fnc_node => {
+      scw_fnc_node.serveHandler(handle, 8080);
+    });
+}
