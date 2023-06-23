@@ -1,0 +1,34 @@
+service: crew-backup
+configValidationMode: off
+useDotenv: true
+
+provider:
+  name: scaleway
+  runtime: node18
+  stage: production
+  scwToken: ${env:API_KEY}
+  scwProject: ${env:PROJECT_ID}
+
+plugins:
+  - serverless-scaleway-functions
+
+package:
+  patterns:
+    - '!.gitignore'
+    - '!.git/**'
+    - '!readme.md'
+    - '!.npmrc'
+    - '!.infisical.json'
+
+functions:
+  backup-instance-crew:
+    handler: handler.handle
+    events:
+      - schedule:
+          rate: '0 0 * * *'
+    env:
+      PROJECT_ID: ${env:PROJECT_ID}
+      ZONE: ${env:ZONE}
+      VOLUME_ID: ${env:VOLUME_ID}
+    secret:
+      API_KEY: ${env:API_KEY}
