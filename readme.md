@@ -7,7 +7,7 @@ This serverless function creates a backup of a given Scaleway volume every day a
 You need to have infisical and pnpm setup.
 Check the Crew's guide for further informations.
 
-## Usage
+## Usage (for now we use npm due to compability with Serverless ...)
 
 1. Run `pnpm install`
 2. Update the infisical's secret accordingly
